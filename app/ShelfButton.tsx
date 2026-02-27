@@ -1,20 +1,45 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import {Ionicons} from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Animated } from "react-native";
+import { useRef } from "react";
+
+const scale = useRef(new Animated.Value(1)).current;
+
+function animateTo(value: number) {
+    Animated.spring(scale, {
+        toValue: value,
+        useNativeDriver: true,
+        friction: 7,
+        tension: 120,
+    }).start();
+};
 
 type Props = {
+    id: string;
     title: string;
     color: string;
     icon: string;
 };
 
-export function ShelfButton({title, color, icon}: Props) {
+export function ShelfButton({id, title, color, icon}: Props) {
    return (
-    <Pressable style={[styles.container, { backgroundColor: color }]}>
+    <Animated.View style={{transform: [{ scale }] }}>
+        <Pressable
+        onPress={() => {
+            if (id === "notes") router.push("/notes" as any);
+        }}
+        onPressIn={() => animateTo(0.97)} // mobile animation
+        onPressOut={() => animateTo(1)} // mobile animation
+        onHoverIn={() => animateTo(1.03)} // notebook animation
+        onHoverOut={() => animateTo(1)} // notebook animation
+        style={[styles.container, { backgroundColor: color }]}>
         <View style={styles.iconWrapper}>
         <Ionicons name={icon as any} size={18} color="rgba(255,255,255,0.9)"/>
         </View>
         <Text style={styles.title}>{title}</Text>
     </Pressable>
+    </Animated.View>
     );
 }
 
@@ -25,6 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 14,
 
 

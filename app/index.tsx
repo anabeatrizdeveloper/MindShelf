@@ -37,6 +37,7 @@ export default function HomeScreen() {
               {vm.shelves.map((shelf) => (
                 <ShelfButton 
                 key={shelf.id} 
+                id={shelf.id}
                 title={shelf.title}
                 color={shelf.color}
                 icon={shelf.icon}/>
